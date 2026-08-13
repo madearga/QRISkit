@@ -1,6 +1,6 @@
 {
   "name": "qriskit",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Zero-dependency, runtime-agnostic TypeScript toolkit for QRIS (Quick Response Code Indonesian Standard) — parse, validate, and convert static→dynamic QRIS payloads. Not affiliated with Bank Indonesia.",
   "type": "module",
   "license": "MIT",

@@ -50,9 +50,10 @@ const meta = parseQRIS(dinamis);
 |--------|------------|
 | `convertQRIS(qris, { amount, fee? })` | Konversi statis → dinamis, hitung ulang CRC16. |
 | `validateQRIS(qris)` → `{ valid, errors }` | Cek struktur + integritas CRC16. |
-| `parseQRIS(qris)` → `QrisMeta` | Metadata: method, currency, negara, nama/kota merchant, postal, nominal. |
+| `parseQRIS(qris)` → `QrisMeta` | Metadata lengkap: method, currency, **provider**, merchant info, additional data (tag 62), nominal. |
 | `parseTLV(qris)` / `buildTLV(elements)` | TLV tingkat lanjut (parse / susun, dukung nested). |
 | `crc16(str)` | CRC-16/CCITT-FALSE (CRC standar QRIS). |
+| `providerFromGui(gui)` | Nama provider ramah dari GUI (mis. `ShopeePay`), atau GUI mentah jika tak dikenal. |
 
 ---
 
@@ -86,6 +87,19 @@ See the API table above. Full types are shipped (`QrisMeta`, `ConvertOptions`, `
 
 ---
 
+## Deteksi provider / Provider detection
+
+```ts
+const m = parseQRIS(qris);
+m.provider;             // "ShopeePay" | "DANA" | "Bank Mandiri" | … | raw GUI
+m.issuerGui;            // "ID.CO.SHOPEE.WWW"
+m.merchantAccountInfo;  // { tag: "40", gui, pan?, criteria?, fields }
+m.additionalData;       // { terminalLabel?, referenceLabel?, purpose?, paymentSystemSpecific?, … }
+```
+
+Provider dikenali secara **read-only** (bukan verifikasi registry Bank Indonesia): ShopeePay, GoPay, DANA, OVO, Bank Mandiri, BCA, BRI, BNI, LinkAja, Xendit, QRIS (generic). GUI tak dikenal dikembalikan apa adanya — tanpa throw. Tervalidasi di data issuer nyata: ShopeePay (tag 40), Bank Mandiri & DANA (tag 26).
+
+## Kenapa qriskit? / Why qriskit?
 ## Kenapa qriskit? / Why qriskit?
 
 - **Zero runtime dependencies** — kode murni, tidak ada pohon dependensi yang membengkak.
