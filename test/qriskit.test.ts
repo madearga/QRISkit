@@ -1,5 +1,5 @@
 import { test, expect } from "bun:test";
-import { convertQRIS, crc16, parseQRIS, validateQRIS } from "../src/index";
+import { convertQRIS, crc16, parseQRIS, providerFromGui, validateQRIS } from "../src/index";
 
 // Real static QRIS payload (merchant account + merchant data) from a public Go fixture.
 // The fixture's stored CRC was a sample, not self-validating. QRIS CRC is CRC-16/CCITT-FALSE,
@@ -12,6 +12,10 @@ const GOLDEN = GOLDEN_PAYLOAD + crc16(GOLDEN_PAYLOAD); // self-consistent static
 // Retains real issuer structure (Bank Mandiri tag-26, QRIS tag-51, tag-62 terminal label).
 const REAL_SHAPED =
   "00020101021126690021ID.CO.BANKMANDIRI.WWW01189999999999999999990211000000000000303UKE51440014ID.CO.QRIS.WWW0215ID00000000000000303UKE5204274153033605802ID5915Contoh Merchant6007Jakarta61051000062070703A0163040C01";
+// Real ShopeePay-shaped QRIS (issuer GUI ID.CO.SHOPEE.WWW, found in tag 40).
+// Merchant identity (PAN, name, payment-system-specific token) masked; CRC recomputed.
+const SHOPEE_MASKED =
+  "00020101021240550016ID.CO.SHOPEE.WWW011800000000000000000002090000000005204482953033605802ID5915Contoh Merchant6015Jakarta Selatan61051000062470804DMCT993500000000000000000000000000000000000630491F3";
 
 test("crc16 matches CRC-16/CCITT-FALSE check value (the QRIS standard)", () => {
   expect(crc16("123456789")).toBe("29B1");
@@ -75,4 +79,32 @@ test("real Bank-Mandiri-shaped QRIS (merchant masked) validates and converts", (
   expect(validateQRIS(dyn).valid).toBe(true);
   expect(parseQRIS(dyn).amount).toBe("12345");
   expect(parseQRIS(dyn).method).toBe("dynamic");
+});
+
+test("provider detection: Bank Mandiri (tag 26)", () => {
+  const m = parseQRIS(REAL_SHAPED);
+  expect(m.provider).toBe("Bank Mandiri");
+  expect(m.issuerGui).toBe("ID.CO.BANKMANDIRI.WWW");
+  expect(m.merchantAccountInfo?.tag).toBe("26");
+});
+
+test("provider detection: DANA (tag 26)", () => {
+  expect(parseQRIS(GOLDEN).provider).toBe("DANA");
+});
+
+test("provider detection: ShopeePay (tag 40) + additional data", () => {
+  const m = parseQRIS(SHOPEE_MASKED);
+  expect(m.provider).toBe("ShopeePay");
+  expect(m.issuerGui).toBe("ID.CO.SHOPEE.WWW");
+  expect(m.merchantAccountInfo?.tag).toBe("40");
+  expect(m.additionalData?.purpose).toBe("DMCT");
+  expect(m.additionalData?.paymentSystemSpecific?.["99"]).toBeTruthy();
+});
+
+test("additional data: terminalLabel from tag 62 sub-07", () => {
+  expect(parseQRIS(REAL_SHAPED).additionalData?.terminalLabel).toBe("A01");
+});
+
+test("providerFromGui falls back to raw GUI when unknown", () => {
+  expect(providerFromGui("ID.CO.UNKNOWN.WWW")).toBe("ID.CO.UNKNOWN.WWW");
 });

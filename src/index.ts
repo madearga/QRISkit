@@ -10,10 +10,13 @@ export { parseTLV, buildTLV, makeTLV } from "./tlv";
 export { convertQRIS } from "./convert";
 export { validateQRIS } from "./validate";
 export { parseQRIS } from "./meta";
+export { providerFromGui, findMerchantInfo } from "./provider";
 export type {
   TLV,
   QrisMethod,
   QrisMeta,
   ValidationResult,
   ConvertOptions,
+  MerchantAccountInfo,
+  AdditionalData,
 } from "./types";
