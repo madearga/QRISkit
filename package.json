@@ -1,0 +1,39 @@
+{
+  "name": "qriskit",
+  "version": "0.1.0",
+  "description": "Zero-dependency, runtime-agnostic TypeScript toolkit for QRIS (Quick Response Code Indonesian Standard) — parse, validate, and convert static→dynamic QRIS payloads. Not affiliated with Bank Indonesia.",
+  "type": "module",
+  "license": "MIT",
+  "author": "madearga",
+  "homepage": "https://github.com/madearga/qriskit#readme",
+  "repository": { "type": "git", "url": "git+https://github.com/madearga/qriskit.git" },
+  "bugs": { "url": "https://github.com/madearga/qriskit/issues" },
+  "keywords": [
+    "qris", "qris-dinamis", "emvco", "qr-code", "payment", "indonesia",
+    "bank-indonesia", "crc16", "static-to-dynamic", "typescript", "zero-dependency"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist", "README.md", "LICENSE"],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "bun run build && bun test"
+  },
+  "devDependencies": {
+    "bun-types": "^1.1.0",
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.0"
+  },
+  "engines": { "node": ">=18" }
+}
