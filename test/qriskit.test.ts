@@ -7,6 +7,11 @@ import { convertQRIS, crc16, parseQRIS, validateQRIS } from "../src/index";
 const GOLDEN_PAYLOAD =
   "00020101021126570011ID.DANA.WWW011893600915359232303502095923230350303UMI51440014ID.CO.QRIS.WWW0215ID10243125491310303UMI5204594553033605802ID5916Azhar Byte Store6011Kota Bekasi6105171116304";
 const GOLDEN = GOLDEN_PAYLOAD + crc16(GOLDEN_PAYLOAD); // self-consistent static QRIS
+// Real Bank-Mandiri-shaped QRIS derived from a live issuer QRIS (Surabaya merchant).
+// Merchant identity (PAN, NMID, name, city, postal) masked to dummy values; CRC recomputed.
+// Retains real issuer structure (Bank Mandiri tag-26, QRIS tag-51, tag-62 terminal label).
+const REAL_SHAPED =
+  "00020101021126690021ID.CO.BANKMANDIRI.WWW01189999999999999999990211000000000000303UKE51440014ID.CO.QRIS.WWW0215ID00000000000000303UKE5204274153033605802ID5915Contoh Merchant6007Jakarta61051000062070703A0163040C01";
 
 test("crc16 matches CRC-16/CCITT-FALSE check value (the QRIS standard)", () => {
   expect(crc16("123456789")).toBe("29B1");
@@ -58,4 +63,16 @@ test("validateQRIS rejects a tampered CRC", () => {
   const r = validateQRIS(tampered);
   expect(r.valid).toBe(false);
   expect(r.errors.join(" ")).toMatch(/CRC mismatch/);
+});
+
+test("real Bank-Mandiri-shaped QRIS (merchant masked) validates and converts", () => {
+  expect(validateQRIS(REAL_SHAPED).valid).toBe(true);
+  const meta = parseQRIS(REAL_SHAPED);
+  expect(meta.method).toBe("static");
+  expect(meta.merchantName).toBe("Contoh Merchant"); // masked, not the real merchant
+  expect(meta.merchantCity).toBe("Jakarta");
+  const dyn = convertQRIS(REAL_SHAPED, { amount: 12345 });
+  expect(validateQRIS(dyn).valid).toBe(true);
+  expect(parseQRIS(dyn).amount).toBe("12345");
+  expect(parseQRIS(dyn).method).toBe("dynamic");
 });
