@@ -22,8 +22,11 @@
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": ["dist", "README.md", "LICENSE"],
+  "files": ["dist", "bin", "README.md", "LICENSE"],
   "sideEffects": false,
+  "bin": {
+    "qris": "./bin/qris.mjs"
+  },
   "scripts": {
     "build": "tsup",
     "test": "bun test",

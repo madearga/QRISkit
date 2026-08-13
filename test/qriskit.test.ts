@@ -1,5 +1,6 @@
 import { test, expect } from "bun:test";
 import { convertQRIS, crc16, parseQRIS, providerFromGui, validateQRIS } from "../src/index";
+import { runCli } from "../src/cli";
 
 // Real static QRIS payload (merchant account + merchant data) from a public Go fixture.
 // The fixture's stored CRC was a sample, not self-validating. QRIS CRC is CRC-16/CCITT-FALSE,
@@ -107,4 +108,49 @@ test("additional data: terminalLabel from tag 62 sub-07", () => {
 
 test("providerFromGui falls back to raw GUI when unknown", () => {
   expect(providerFromGui("ID.CO.UNKNOWN.WWW")).toBe("ID.CO.UNKNOWN.WWW");
+});
+
+test("cli: convert produces a valid dynamic QRIS", () => {
+  const r = runCli(["convert", GOLDEN, "50000"]);
+  expect(r.code).toBe(0);
+  expect(validateQRIS(r.stdout.trim()).valid).toBe(true);
+});
+
+test("cli: convert with fee", () => {
+  const r = runCli(["convert", GOLDEN, "50000", "--fee=fixed:1000"]);
+  expect(r.code).toBe(0);
+  expect(r.stdout).toContain("56041000");
+});
+
+test("cli: validate valid → code 0", () => {
+  expect(runCli(["validate", GOLDEN]).code).toBe(0);
+  expect(runCli(["validate", GOLDEN]).stdout).toBe("valid\n");
+});
+
+test("cli: validate tampered → code 1 + errors", () => {
+  const r = runCli(["validate", GOLDEN.slice(0, -4) + "0000"]);
+  expect(r.code).toBe(1);
+  expect(r.stderr).toMatch(/CRC mismatch/);
+});
+
+test("cli: provider", () => {
+  expect(runCli(["provider", SHOPEE_MASKED]).stdout.trim()).toBe("ShopeePay");
+  expect(runCli(["provider", GOLDEN]).stdout.trim()).toBe("DANA");
+});
+
+test("cli: info returns JSON metadata with provider", () => {
+  const r = runCli(["info", GOLDEN]);
+  expect(r.code).toBe(0);
+  expect(JSON.parse(r.stdout).provider).toBe("DANA");
+});
+
+test("cli: missing args → usage, code 2", () => {
+  expect(runCli([]).code).toBe(2);
+  expect(runCli(["convert"]).code).toBe(2);
+});
+
+test("cli: malformed input → caught error, code 1", () => {
+  const r = runCli(["convert", "not-a-qris", "50000"]);
+  expect(r.code).toBe(1);
+  expect(r.stderr).toMatch(/error:/);
 });

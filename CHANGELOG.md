@@ -13,7 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Provider detection** — `parseQRIS` now returns `provider` (friendly name) and `issuerGui` from the merchant-account-info tag (26 retail / 40 / 51 cross-border) sub-tag 00. Maps ShopeePay, GoPay, DANA, OVO, Bank Mandiri, BCA, BRI, BNI, QRIS, LinkAja, Xendit; unknown GUIs fall back to the raw string.
 - **Rich metadata parse (read-only)** — `parseQRIS` now surfaces `merchantAccountInfo` (gui/pan/criteria/fields) and `additionalData` (tag 62 sub-fields: billNumber, mobileNumber, storeLabel, loyaltyNumber, referenceLabel, customerLabel, terminalLabel, purpose, additionalConsumerDataRequest, merchantTaxId, merchantChannel, payment-system-specific 50–99).
 - New `src/provider.ts` (`providerFromGui`, `findMerchantInfo`); new types `MerchantAccountInfo`, `AdditionalData`.
-- Tests: masked ShopeePay fixture (tag 40); provider detection across Mandiri / DANA / ShopeePay; tag-62 terminalLabel + payment-system-specific; unknown-GUI fallback. 14 tests, 39 asserts.
+- **CLI** — `qris` binary (`qris convert | validate | info | provider`). Pure `runCli(argv)` logic in `src/cli.ts` (testable); thin `bin/qris.mjs` wrapper over the built `dist/cli.js`.
+- Tests: masked ShopeePay fixture (tag 40); provider detection across Mandiri / DANA / ShopeePay; tag-62 terminalLabel + payment-system-specific; unknown-GUI fallback; CLI subcommands + error paths. 22 tests, 47 asserts.
 
 ### Notes
 - Reconciliation is intentionally **out of scope** — official QRIS reconciliation is server-side (PG/PSP webhook `order_id`), not a string-manipulation library's job.

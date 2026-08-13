@@ -123,6 +123,19 @@ Provider dikenali secara **read-only** (bukan verifikasi registry Bank Indonesia
 
 ---
 
+## CLI
+
+Setelah `npm install -g qriskit` (atau `npx qriskit`):
+
+```bash
+qris convert   "<qris>" 75000                  # static → dynamic
+qris convert   "<qris>" 75000 --fee=fixed:1000 # dengan biaya
+qris validate  "<qris>"                        # cek struktur + CRC
+qris info      "<qris>"                        # metadata lengkap (JSON, incl. provider)
+qris provider  "<qris>"                        # nama provider saja
+```
+
+## Pengembangan / Development
 ## Pengembangan / Development
 
 ```bash
