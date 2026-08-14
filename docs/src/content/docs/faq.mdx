@@ -1,0 +1,22 @@
+---
+title: FAQ & Catatan
+description: Pertanyaan umum dan catatan penting.
+---
+
+# FAQ & Catatan
+
+## Apakah qriskit merekonsiliasi pembayaran?
+
+**Tidak.** Rekonsiliasi QRIS resmi adalah tanggung jawab **server-side** — Payment Gateway/PSP mengikat QR dinamis ke `order_id` dan mencocokkan via webhook. qriskit hanyalah alat manipulasi string payload QRIS (parse / validate / encode) — tidak memproses pembayaran, memindahkan dana, atau berinteraksi dengan server pembayaran mana pun. "Kode unik nominal" (amount suffix) sengaja tidak disediakan — itu teknik Virtual Account, bukan mekanisme QRIS resmi.
+
+## Soal merek "QRIS"
+
+"QRIS" adalah **merek dagang terdaftar Bank Indonesia**. qriskit adalah proyek komunitas **independen**, tidak berafiliasi, tidak didukung, dan tidak disponsori oleh Bank Indonesia. Lihat disclaimer di LICENSE dan README.
+
+## Kenapa tidak ada QR image di core?
+
+Karena inti library **nol-dependensi**. Rendering gambar QR (via `qrcode` dan kawan-kawan) tersedia sebagai **addon opsional** — lihat demo web untuk contoh. Menjaga core tetap bersih adalah filosofi desain (YAGNI): siapa pun yang butuh rendering bisa menambahkannya tanpa membebani yang tidak membutuhkan.
+
+## Apa bedanya QRIS statis vs dinamis?
+
+**Statis** (method `11`): nominal dimasukkan pembeli manual saat scan. **Dinamis** (method `12`): nominal sudah tercantum di QR (tag 54) — dibuat dengan `convertQRIS`.

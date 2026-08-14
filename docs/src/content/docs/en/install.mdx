@@ -1,0 +1,49 @@
+---
+title: Install & Usage
+description: How to install qriskit and get started.
+---
+
+# Install & Usage
+
+## Install
+
+```bash
+bun add qriskit
+```
+
+or
+
+```bash
+npm install qriskit
+```
+
+Zero runtime dependencies. Works in Bun, Node (≥18), browser, Deno, and edge runtimes.
+
+## Quickstart
+
+```ts
+import { convertQRIS, validateQRIS, parseQRIS } from "qriskit";
+
+const staticQris = "000201010211...6304XXXX";
+
+// Convert static → dynamic (inject amount + optional fee)
+const dynamic = convertQRIS(staticQris, { amount: 75000 });
+const withFee = convertQRIS(staticQris, {
+  amount: 75000,
+  fee: { type: "fixed", value: 1000 }, // or { type: "percentage", value: 2 }
+});
+
+// Validate structure + CRC16 (never throws)
+const { valid, errors } = validateQRIS(dynamic);
+
+// Full metadata — including provider detection
+const meta = parseQRIS(dynamic);
+console.log(meta.provider);      // "DANA" | "ShopeePay" | "Bank Mandiri" | ...
+console.log(meta.method);        // "dynamic"
+console.log(meta.merchantName);  // ...
+```
+
+## Error handling
+
+- `convertQRIS` and `parseQRIS` **throw** on malformed input (like `JSON.parse`).
+- `validateQRIS` **never throws** — always returns `{ valid, errors }`.

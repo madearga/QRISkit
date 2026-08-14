@@ -1,0 +1,19 @@
+---
+title: Perbandingan
+description: qriskit vs paket QRIS lain di ekosistem.
+---
+
+# Perbandingan
+
+Disusun dari riset publik (npm + GitHub), per 2026-08.
+
+| | **qriskit** | `@prasetya/qris` | `@shamah/dynamic-qris` | `@fhylabs/qris-dynamic` | `qris-dinamis` (razisek) |
+|---|:---:|:---:|:---:|:---:|:---:|
+| Zero runtime deps | ✅ | ✅ | ✅ | ❌ | ❌ |
+| Runtime-agnostic (browser/edge/Deno) | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Tree-shakeable ESM + CJS | ✅ | ✅ | ✅ | ❌ | ❌ |
+| Strict TypeScript + types | ✅ | ✅ | ✅ | ✅ | ❌ |
+| Validate + CRC check | ✅ | ✅ | ✅ | ❌ | ❌ |
+| Actively maintained (2026) | ✅ | ✅ | ✅ | ⚠️ | ❌ |
+
+> Tabel ini adalah gambaran singkat, bukan penghakiman — paket lain punya kelebihan yang qriskit tidak (mis. `@fhylabs` punya QR image generation). Buka [Issue](https://github.com/madearga/QRISkit/issues) untuk memperbarui data yang sudah usang.

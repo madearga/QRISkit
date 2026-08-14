@@ -1,0 +1,53 @@
+---
+title: Cookbook / Examples
+description: Working qriskit examples for Bun, Node, browser, Deno, and Cloudflare Workers.
+---
+
+# Cookbook / Examples
+
+Common pattern in every runtime: parse → validate → convert (with fee) → provider detection.
+
+## Bun
+
+```ts
+import { convertQRIS, validateQRIS, parseQRIS } from "qriskit";
+
+const dynamic = convertQRIS(qris, { amount: 50000, fee: { type: "fixed", value: 1000 } });
+console.log(validateQRIS(dynamic).valid, parseQRIS(dynamic).provider);
+```
+
+## Node (ESM + CJS)
+
+```ts
+// ESM
+import { convertQRIS } from "qriskit";
+// CJS
+const { convertQRIS } = require("qriskit");
+```
+
+## Browser
+
+Via a bundler (Vite/TanStack Start/etc.), `import { convertQRIS } from "qriskit"` — pure TS, no Node APIs, runs in the browser.
+
+## Deno
+
+```ts
+import { convertQRIS, validateQRIS } from "qriskit";
+
+const d = convertQRIS(qris, { amount: 75000 });
+if (!validateQRIS(d).valid) throw new Error("invalid");
+```
+
+## Cloudflare Worker
+
+```ts
+import { convertQRIS, validateQRIS } from "qriskit";
+
+export default {
+  async fetch(req) {
+    const qris = await req.text();
+    const dynamic = convertQRIS(qris, { amount: 50000 });
+    return new Response(dynamic, { status: validateQRIS(dynamic).valid ? 200 : 400 });
+  },
+};
+```
