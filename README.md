@@ -9,8 +9,6 @@
 [![types](https://img.shields.io/npm/types/qriskit)](https://www.npmjs.com/package/qriskit)
 [![built with GLM-5.2](https://img.shields.io/badge/built_with-GLM--5.2_(ZAI)-6F42E1)](https://z.ai)
 
-**Live demo:** [demo-argakukas-projects.vercel.app](https://demo-argakukas-projects.vercel.app) · **Docs:** [docs-argakukas-projects.vercel.app](https://docs-argakukas-projects.vercel.app)
-
 Parse, validate, dan konversi payload QRIS **statis → dinamis**. Berjalan di **Bun, Node, browser, Deno, dan edge runtime** (Cloudflare Workers). Tidak memproses pembayaran — hanya memanipulasi string payload QRIS untuk keperluan tampilan/encoding.
 
 ---
