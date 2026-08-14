@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useMemo, useRef, useState } from "react";
 import QRCode from "qrcode";
 import jsQR from "jsqr";
-import { convertQRIS, parseQRIS, validateQRIS, type QrisMeta } from "qriskit";
+import { convertQRIS, parseQRIS, validateQRIS, type QrisMeta } from "../lib/qriskit";
 
 export const Route = createFileRoute("/")({
   component: Demo,
