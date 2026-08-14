@@ -25,6 +25,12 @@ export function validateQRIS(input: string): ValidationResult {
     if (elements[0]?.tag !== "00") {
       errors.push("does not start with payload format indicator (tag 00)");
     }
+    // The CRC field (tag 63) must be the final element only — reject any payload
+    // carrying an early or duplicate tag 63 (a well-formed QRIS has exactly one, at the end).
+    const last = elements[elements.length - 1];
+    if (elements.length > 1 && elements.some((e) => e.tag === "63" && e !== last)) {
+      errors.push("CRC field (tag 63) appears before the final position");
+    }
   } catch (e) {
     errors.push(`parse error: ${(e as Error).message}`);
   }

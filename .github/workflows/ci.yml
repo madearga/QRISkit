@@ -18,6 +18,20 @@ jobs:
 
   node:
     name: Node (build + import smoke)
+  deno:
+    name: Deno (non-Node runtime smoke)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install
+      - run: bun run build
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Import + convert + validate in Deno
+        run: |
+          deno eval --ext js "import { crc16, convertQRIS, validateQRIS } from './dist/index.js'; if (crc16('123456789') !== '29B1') Deno.exit(1); const q = '00020101021126570011ID.DANA.WWW011893600915359232303502095923230350303UMI51440014ID.CO.QRIS.WWW0215ID10243125491310303UMI5204594553033605802ID5916Azhar Byte Store6011Kota Bekasi61051711163040FB0'; const d = convertQRIS(q, { amount: 50000 }); if (!validateQRIS(d).valid) Deno.exit(1); console.log('deno: import + convert + validate ok');"
     runs-on: ubuntu-latest
     strategy:
       matrix:

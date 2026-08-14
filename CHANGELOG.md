@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- `validateQRIS` now rejects a payload carrying an early or duplicate CRC field (tag 63 before the final position).
+
+### Added
+- Robustness suite (`test/robustness.test.ts`): deterministic fuzz proving `validateQRIS` and `crc16` never throw on arbitrary input; `parseQRIS`/`convertQRIS` parse-or-throw cleanly (never corrupt output); TLV round-trip property; duplicate-CRC rejection. 28 tests, 1560 asserts.
+- CI: Deno job importing the built ESM and running convert + validate in a non-Node runtime (proves runtime-agnosticism).
+
 ## [0.2.0] - 2026-08-13
 
 ### Added
