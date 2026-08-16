@@ -7,6 +7,7 @@ export const Route = createRootRoute({
     meta: [
       { title: "qriskit demo" },
       { name: "description", content: "QRIS parse, validate & convert playground powered by qriskit" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
     ],
     links: [{ rel: "stylesheet", href: styles }],
   }),
@@ -31,7 +32,7 @@ function RootComponent() {
   return (
     <RootDocument>
       <main className="min-h-screen bg-zinc-950 text-zinc-100">
-        <div className="mx-auto max-w-2xl px-4 py-10">
+        <div className="mx-auto max-w-2xl px-4 py-6 sm:py-10">
           <Outlet />
         </div>
       </main>

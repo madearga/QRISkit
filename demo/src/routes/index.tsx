@@ -317,8 +317,19 @@ function Demo() {
         )}
       </Section>
 
-      <footer className="pt-2 text-center text-xs text-zinc-600">
-        Sample QRIS strings are masked and for demo purposes only.
+      <footer className="mt-8 border-t border-zinc-800 pt-6 text-center text-xs text-zinc-500">
+        <p>
+          Built by{" "}
+          <a
+            href="https://argakuka.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-zinc-400 underline underline-offset-2 hover:text-zinc-200"
+          >
+            Argakuka
+          </a>
+          {" "}— Sample QRIS strings are masked and for demo purposes only.
+        </p>
       </footer>
     </div>
   );
